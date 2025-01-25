@@ -3,14 +3,14 @@
 **Author**: Steven Grady  
 
 ## Overview  
-In this assignment, I implement numerical methods for:  
+In this assignment, I implement numerical calculus methods for:  
 1. **Double-precision floating-point conversion** (IEEE 754).  
 2. **Three-digit chopping/rounding** arithmetic.  
 3. **Error analysis** (absolute/relative errors).  
 4. **Series convergence** (alternating series error bound).  
 5. **Root-finding algorithms**:  
-   - Bisection Method (approximates roots via interval halving).  
-   - Newton-Raphson Method (uses derivatives for iterative root approximation).  
+   - Bisection Method  
+   - Newton-Raphson Method  
 
 ## Requirements  
 - Python 3.12.5 (tested and compatible).  
@@ -19,7 +19,6 @@ In this assignment, I implement numerical methods for:
 ## Run Instructions  
 1. Clone the repository:  
 ```
-   bash
    git clone https://github.com/ssgrady/cot-4500-Pro1.git
    cd cot-4500-Pro1
 ```
