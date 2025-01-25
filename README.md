@@ -7,4 +7,4 @@ Author: Steven Grady
 ## Run Instructions
 1. Clone the repository:
    ```bash
-   git clone https://github.com/ssgrady/tot-4500-Pro1.git
+   git clone https://github.com/ssgrady/cot-4500-Pro1.git
