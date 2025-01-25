@@ -78,6 +78,22 @@ def bisection_iterations():
         iterations += 1
     return iterations
 
+# 6b. Newton-Raphson
+def newton_raphson_iterations():
+    f = lambda x: x ** 3 + 4 * x ** 2 - 10
+    f_prime = lambda x: 3 * x ** 2 + 8 * x
+    x_0 = 7.0
+    tol = 1e-4
+    iterations = 0
+
+    while True:
+        x_1 = x_0 - f(x_0) / f_prime(x_0)
+        if abs(x_1 - x_0) < tol:
+            break
+        x_0 = x_1
+        iterations += 1
+    return iterations
+
 if __name__ == "__main__":
     hw_binary = "010000000111111010111001"
     exact_value = double_precision(hw_binary)
@@ -86,6 +102,7 @@ if __name__ == "__main__":
     abs_error, rel_error = compute_errors(exact_value, rounded)
     terms = minimum_terms()
     bisect_iterations = bisection_iterations()
+    newton_iterations = newton_raphson_iterations()
 
     print(f"1) {exact_value:.5f}\n")
     print(f"2) {chopped_value:.5f}\n")
@@ -94,3 +111,4 @@ if __name__ == "__main__":
     print(f"4b) {rel_error:.5f}\n")
     print(f"5) {terms}\n")
     print(f"6a {bisect_iterations}\n")
+    print(f"6b) {newton_iterations}")
