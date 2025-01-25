@@ -28,5 +28,5 @@ python3 src/main/assignment_1.py
 ```
 3. Run unit tests:
 ```
-python3 -m unittest src/test/test_assignment1.py
+python3 -m unittest src/test/test_assignment_1.py
 ```
