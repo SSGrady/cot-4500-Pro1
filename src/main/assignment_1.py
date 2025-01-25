@@ -26,7 +26,6 @@ def double_precision(binary):
 
 
 # 2. Three-Digit Chopping
-# Input: the exact_value taken from double precision
 def three_digit_chopping(value):
     if value == 0:
         return 0.0000
@@ -52,15 +51,26 @@ def compute_errors(exact, approx):
     relative = absolute / abs(exact)
     return (absolute, relative)
 
+# 5. Minimum Terms for the Series Convergence
+def minimum_terms():
+    error = 1e-4
+    n = 1
+    while True:
+        if 1 / ((n+1) ** 3) < error:
+            return n
+        n += 1
+
 if __name__ == "__main__":
     hw_binary = "010000000111111010111001"
     exact_value = double_precision(hw_binary)
     chopped_value = three_digit_chopping(exact_value)
     rounded = three_digit_rounding(exact_value)
     abs_error, rel_error = compute_errors(exact_value, rounded)
+    terms = minimum_terms()
 
     print(f"1) {exact_value:.5f}\n")
     print(f"2) {chopped_value:.5f}\n")
     print(f"3) {rounded:.5f}\n")
     print(f"4a) {abs_error:.5f}\n") 
     print(f"4b) {rel_error:.5f}\n")
+    print(f"5) {terms}\n")
