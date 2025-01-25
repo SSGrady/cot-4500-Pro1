@@ -94,6 +94,16 @@ def newton_raphson_iterations():
         iterations += 1
     return iterations
 
+def fixed_point_iteration(g, x_0, tol=1e-4, max_iter=100):
+    iterations = 0
+    while iterations < max_iter:
+        x_1 = g(x_0)
+        if abs(x_1 - x_0) < tol:
+            break
+        x_0 = x_1
+        iterations += 1
+    return iterations
+
 if __name__ == "__main__":
     hw_binary = "010000000111111010111001"
     exact_value = double_precision(hw_binary)
@@ -110,5 +120,5 @@ if __name__ == "__main__":
     print(f"4a) {abs_error:.5f}\n") 
     print(f"4b) {rel_error:.5f}\n")
     print(f"5) {terms}\n")
-    print(f"6a {bisect_iterations}\n")
+    print(f"6a) {bisect_iterations}\n")
     print(f"6b) {newton_iterations}")
