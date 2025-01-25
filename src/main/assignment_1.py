@@ -3,7 +3,7 @@ import math
 
 # 1. Double Precision Calculation
 # Input: binary a truncated 64-bit string in IEEE 754 format
-hw_binary = "010000000111111010111001"
+
 def double_precision(binary):
     BIAS = 1023
 
@@ -19,15 +19,14 @@ def double_precision(binary):
     mantissa = 1.0
     for i in range(len(mantissa_bits)):
         mantissa += int(mantissa_bits[i]) * 2 ** (-i - 1)
-    value = (-1) ** sign *(2 ** exponent) * mantissa
+    value = (-1) ** sign * (2 ** exponent) * mantissa
 
     return value
-
-exact_value = double_precision(hw_binary)
 
 
 
 # 2. Three-Digit Chopping
+# Input: the exact_value taken from double precision
 def three_digit_chopping(value):
     if value == 0:
         return 0.0000
@@ -37,11 +36,31 @@ def three_digit_chopping(value):
     chopped = int(scaled_value) / scale_factor
     return float(f"{chopped:.5f}")
 
+# 3. Three-Digit Rounding
+def three_digit_rounding(value):
+    if value == 0:
+        return 0.00000
+    magnitude = math.floor(math.log10(abs(value)))
+    scale = 10 ** (3 - 1 - magnitude)
+    scaled_value = value * scale
+    rounded = round(scaled_value) / scale
+    return float(f"{rounded:.5f}")
 
-chopped_value = three_digit_chopping(exact_value)
+# 4. Absolute & Relative Error
+def compute_errors(exact, approx):
+    absolute = abs(exact - approx)
+    relative = absolute / abs(exact)
+    return (absolute, relative)
 
-def print_hw1():
-    print(f"1) {exact_value:.5f}\n") #1) 491.56250
-    print(f"2) {chopped_value:.5f}\n") #2) 491.00000
+if __name__ == "__main__":
+    hw_binary = "010000000111111010111001"
+    exact_value = double_precision(hw_binary)
+    chopped_value = three_digit_chopping(exact_value)
+    rounded = three_digit_rounding(exact_value)
+    abs_error, rel_error = compute_errors(exact_value, rounded)
 
-print_hw1()
+    print(f"1) {exact_value:.5f}\n")
+    print(f"2) {chopped_value:.5f}\n")
+    print(f"3) {rounded:.5f}\n")
+    print(f"4a) {abs_error:.5f}\n") 
+    print(f"4b) {rel_error:.5f}\n")
