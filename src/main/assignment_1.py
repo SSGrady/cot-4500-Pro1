@@ -93,7 +93,7 @@ def newton_raphson_iterations():
         x_0 = x_1
         iterations += 1
     return iterations
-
+# Algorithm: Fixed Point iteration (2.2 slide 13)
 def fixed_point_iteration(g, x_0, tol=1e-4, max_iter=100):
     iterations = 0
     while iterations < max_iter:
