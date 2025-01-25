@@ -53,12 +53,30 @@ def compute_errors(exact, approx):
 
 # 5. Minimum Terms for the Series Convergence
 def minimum_terms():
-    error = 1e-4
+    tol = 1e-4
     n = 1
     while True:
-        if 1 / ((n+1) ** 3) < error:
+        if 1 / ((n+1) ** 3) < tol:
             return n
         n += 1
+
+# 6a. Bisection Method Iterations
+def bisection_iterations():
+    f = lambda x: x ** 3 + 4 * x ** 2 - 10
+    a, b = -4.0, 7.0
+    tol = 1e-4
+    iterations = 0
+
+    while (b - a) / 2 > tol:
+        c = (a + b) / 2
+        if f(c) == 0:
+            break
+        elif f(a) * f(c) < 0:
+            b = c
+        else:
+            a = c
+        iterations += 1
+    return iterations
 
 if __name__ == "__main__":
     hw_binary = "010000000111111010111001"
@@ -67,6 +85,7 @@ if __name__ == "__main__":
     rounded = three_digit_rounding(exact_value)
     abs_error, rel_error = compute_errors(exact_value, rounded)
     terms = minimum_terms()
+    bisect_iterations = bisection_iterations()
 
     print(f"1) {exact_value:.5f}\n")
     print(f"2) {chopped_value:.5f}\n")
@@ -74,3 +93,4 @@ if __name__ == "__main__":
     print(f"4a) {abs_error:.5f}\n") 
     print(f"4b) {rel_error:.5f}\n")
     print(f"5) {terms}\n")
+    print(f"6a {bisect_iterations}\n")
