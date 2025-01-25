@@ -17,9 +17,9 @@ In this assignment, I implement numerical calculus methods for:
 - **No external libraries** required (see empty `requirements.txt`)  
 
 ## Run Instructions  
-1. Clone the repository:  
+1. Clone the repository using SSH:  
 ```
-   git clone https://github.com/ssgrady/cot-4500-Pro1.git
+   git clone git@github.com:SSGrady/cot-4500-Pro1.git
    cd cot-4500-Pro1
 ```
 2. Execute the main script to print all answers:
