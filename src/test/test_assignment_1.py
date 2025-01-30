@@ -1,39 +1,47 @@
 # src/test/test_assignment_1.py
 import unittest
-from src.main.assignment_1 import *
+import math
+import re
+from io import StringIO
+from unittest.mock import patch
+
+from src.main.assignment_1 import (
+    approximate_root_two,
+    bisection_method,
+    fixed_point_iteration,
+    newton_raphson_method
+)
 
 class TestAssignment1(unittest.TestCase):
-    def setUp(self):
-        # Precompute values used across tests below
-        self.binary = "010000000111111010111001"
-        self.exact_value = double_precision(self.binary)
-        self.chopped_value = three_digit_chopping(self.exact_value)
-        self.rounded_value = three_digit_rounding(self.exact_value)
-        self.abs_error, self.rel_error = compute_errors(self.exact_value, self.rounded_value)
-    
-    def test_double_precision(self):
-        self.assertAlmostEqual(self.exact_value, 491.56250, places=5)
-    
-    def test_three_digit_chopping(self):
-        self.assertEqual(self.chopped_value, 491.00000)
-    
-    def test_three_digit_rounding(self):
-        self.assertEqual(self.rounded_value, 492.00000)
-    
-    def test_absolute_error(self):
-        self.assertAlmostEqual(self.abs_error, 0.43750, places=5)
-    
-    def test_relative_error(self):
-        self.assertAlmostEqual(self.rel_error, 0.00089, places=5)
-    
-    def test_minimum_terms(self):
-        self.assertEqual(minimum_terms(), 21)
-    
-    def test_bisection_iterations(self):
-        self.assertEqual(bisection_iterations(), 16)
-    
-    def test_newton_raphson_iterations(self):
-        self.assertEqual(newton_raphson_iterations(), 6)
+
+    def test_approximate_root_two(self):
+        iterations = approximate_root_two(x0=1.5, tol=1e-6)
+        self.assertEqual(iterations, 4, f"Expected 4 iterations but got {iterations}.")
+
+    def test_bisection_method(self):
+        def f(x):
+            return x**3 + 4*x**2 - 10
+        p = bisection_method(f, left=1, right=2, tol=1e-3, max_iter=100)
+        self.assertGreaterEqual(p, 1.0, "Expected p to be >= 1.0")
+        self.assertLessEqual(p, 2.0, "Expected p to be <= 2.0")
+
+    def test_fixed_point_iteration(self):
+        def f(x):
+            return x**3 + 4*x**2 - 10
+        def g_stable(x):
+            val = (10 - x**3) / 4.0
+            return math.sqrt(val) if val >= 0 else float('nan')
+        p = fixed_point_iteration(g_stable, p0=1.5, tol=1e-6, max_iter=50)
+        self.assertIsNotNone(p)
+        self.assertAlmostEqual(f(p), 0.0, delta=1e-3)
+
+    def test_newton_raphson_method(self):
+        def f(x):
+            return math.cos(x) - x
+        def f_prime(x):
+            return -math.sin(x) - 1
+        root = newton_raphson_method(f, f_prime, p0=math.pi/4, tol=1e-10, max_iter=50)
+        self.assertAlmostEqual(root, 0.739085, delta=2e-7)
 
 if __name__ == "__main__":
     unittest.main()
