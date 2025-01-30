@@ -1,124 +1,106 @@
 # src/main/assignment_1.py
 import math
 
-# 1. Double Precision Calculation
-# Input: binary a truncated 64-bit string in IEEE 754 format
+# Approximation algorithm (2.1 - slide 11)
+def approximate_root_two(x0: float, tol: float):
+    print("===============================")
+    print("|approximation algorithm (2.1)|")
+    print("===============================\n")
+    iteration = 0
+    diff = x0
+    x = x0
 
-def double_precision(binary):
-    BIAS = 1023
+    print(f"{iteration} : {x}")
+    while diff >= tol:
+        iteration += 1
+        old_x = x
+        x = (x / 2) + (1 / x)  # Newton iteration for sqrt(2)
+        print(f"{iteration} : {x}")
+        diff = abs(x - old_x)
 
-    sign = int(binary[0])
-    exponent_bits = binary[1:12]
-    # pading with zeros
-    mantissa_bits = binary[12:] + '0' * (52 - len(binary[12:]))
+    print(f"\nConvergence after {iteration} iterations\n")
+    return iteration
 
-    # calculate exponent using: int(val, base)
-    exponent = int(exponent_bits, 2) - BIAS
-
-    # calculate matissa
-    mantissa = 1.0
-    for i in range(len(mantissa_bits)):
-        mantissa += int(mantissa_bits[i]) * 2 ** (-i - 1)
-    value = (-1) ** sign * (2 ** exponent) * mantissa
-
-    return value
-
-
-
-# 2. Three-Digit Chopping
-def three_digit_chopping(value):
-    if value == 0:
-        return 0.0000
-    magnitude = math.floor(math.log10(abs(value)))
-    scale_factor = 10 ** (3 - 1 - magnitude)
-    scaled_value = value * scale_factor
-    chopped = int(scaled_value) / scale_factor
-    return float(f"{chopped:.5f}")
-
-# 3. Three-Digit Rounding
-def three_digit_rounding(value):
-    if value == 0:
-        return 0.00000
-    magnitude = math.floor(math.log10(abs(value)))
-    scale = 10 ** (3 - 1 - magnitude)
-    scaled_value = value * scale
-    rounded = round(scaled_value) / scale
-    return float(f"{rounded:.5f}")
-
-# 4. Absolute & Relative Error
-def compute_errors(exact, approx):
-    absolute = abs(exact - approx)
-    relative = absolute / abs(exact)
-    return (absolute, relative)
-
-# 5. Minimum Terms for the Series Convergence
-def minimum_terms():
-    tol = 1e-4
-    n = 1
-    while True:
-        if 1 / ((n+1) ** 3) < tol:
-            return n
-        n += 1
-
-# 6a. Bisection Method Iterations
-def bisection_iterations():
-    f = lambda x: x ** 3 + 4 * x ** 2 - 10
-    a, b = -4.0, 7.0
-    tol = 1e-4
-    iterations = 0
-
-    while (b - a) / 2 > tol:
-        c = (a + b) / 2
-        if f(c) == 0:
-            break
-        elif f(a) * f(c) < 0:
-            b = c
+# Bisection algorithm (2.1 - slide 14)
+def bisection_method(f, left, right, tol=1e-3, max_iter=50):
+    print("\n==========================")
+    print("|bisection (2.1) algorithm|")
+    print("==========================\n")
+    i = 0
+    while abs(right - left) > tol and i < max_iter:
+        i += 1
+        p = (left + right) / 2.0
+        if (f(left) < 0 and f(p) > 0) or (f(left) > 0 and f(p) < 0):
+            right = p
         else:
-            a = c
-        iterations += 1
-    return iterations
+            left = p
+    p = (left + right) / 2.0
+    print(f"Bisection approximate root = {p:.6f} after {i} iterations\n")
+    return p
 
-# 6b. Newton-Raphson
-def newton_raphson_iterations():
-    f = lambda x: x ** 3 + 4 * x ** 2 - 10
-    f_prime = lambda x: 3 * x ** 2 + 8 * x
-    x_0 = 7.0
-    tol = 1e-4
-    iterations = 0
+# Fixed Point Iteration (2.2 - slide 13)
+def fixed_point_iteration(g, p0, tol=1e-4, max_iter=50):
+    print("\n==========================")
+    print("| fixed-point (2.2) method|")
+    print("==========================\n")
+    i = 1
+    result = "Failure"
+    while i <= max_iter:
+        p = g(p0)
+        if math.isinf(p) or math.isnan(p):
+            print("\nResult Diverges")
+            break
+        print(f"{i} : {p:.6f}")
+        if abs(p - p0) < tol:
+            result = "Success"
+            return p
+        i += 1
+        p0 = p
+    print(f"\n{result} after {i} iterations\n")
 
-    while True:
-        x_1 = x_0 - f(x_0) / f_prime(x_0)
-        if abs(x_1 - x_0) < tol:
+def newton_raphson_method(f, f_prime, p0, tol=1e-6, max_iter=50):
+    print("\n=================================")
+    print("| newton-raphson (2.3) algorithm|")
+    print("=================================\n")
+    i = 1
+    result = "Failure"
+    while i <= max_iter:
+        denom = f_prime(p0)
+        if denom == 0:
+            print(f"\nDerivative zero at iteration {i}. Unsuccessful.")
             break
-        x_0 = x_1
-        iterations += 1
-    return iterations
-# Algorithm: Fixed Point iteration (2.2 slide 13)
-def fixed_point_iteration(g, x_0, tol=1e-4, max_iter=100):
-    iterations = 0
-    while iterations < max_iter:
-        x_1 = g(x_0)
-        if abs(x_1 - x_0) < tol:
+        p = p0 - f(p0) / denom
+        if math.isinf(p) or math.isnan(p):
+            print(f"\nResult diverges at iteration {i}")
             break
-        x_0 = x_1
-        iterations += 1
-    return iterations
+        print(f"{i} : {p:.10f}")
+        if abs(p - p0) < tol:
+            result = "Success"
+            print(f"\n{result} after {i} iterations\n")
+            return p
+        p0 = p
+        i += 1
+    print(f"\n{result} after {i-1} iterations")
+    return p0
 
 if __name__ == "__main__":
-    hw_binary = "010000000111111010111001"
-    exact_value = double_precision(hw_binary)
-    chopped_value = three_digit_chopping(exact_value)
-    rounded = three_digit_rounding(exact_value)
-    abs_error, rel_error = compute_errors(exact_value, rounded)
-    terms = minimum_terms()
-    bisect_iterations = bisection_iterations()
-    newton_iterations = newton_raphson_iterations()
+   # Ch 2.1: slide 17 example
+    def bisection_f(x):
+        return x**3 + 4*x**2 - 10
+    # Ch 2.2: slides 14 and 15
+    def g_example(x):
+        return x - (x*x*x) - (4*x*x) + 10  
+    # Solve f(x) = cos(x) - x = 0 on [0, π/2], Ch 2.3: slide 8
+    def newton_raphson_f(x):
+        return math.cos(x) - x
+    # Ch 2.3: slide 8
+    def newton_raphson_f_prime(x):
+        return -math.sin(x) - 1
 
-    print(f"1) {exact_value:.5f}\n")
-    print(f"2) {chopped_value:.5f}\n")
-    print(f"3) {rounded:.5f}\n")
-    print(f"4a) {abs_error:.5f}\n") 
-    print(f"4b) {rel_error:.5f}\n")
-    print(f"5) {terms}\n")
-    print(f"6a) {bisect_iterations}\n")
-    print(f"6b) {newton_iterations}")
+    # Ch 2.1: slide 11
+    approximate_root_two(x0=1.5, tol=1e-6)
+
+    
+    bisection_method(bisection_f, left=1, right=2, tol=1e-3)
+    fixed_point_iteration(g=g_example, p0=1.5, tol=1e-6, max_iter=50)
+    newton_raphson_method(newton_raphson_f, newton_raphson_f_prime, p0=math.pi/4, tol=25*1e-17, max_iter=50)
