@@ -53,10 +53,11 @@ def fixed_point_iteration(g, p0, tol=1e-4, max_iter=50):
         print(f"{i} : {p:.6f}")
         if abs(p - p0) < tol:
             result = "Success"
-            return p
+            break
         i += 1
         p0 = p
     print(f"\n{result} after {i} iterations\n")
+    return p
 
 def newton_raphson_method(f, f_prime, p0, tol=1e-6, max_iter=50):
     print("\n=================================")
@@ -88,8 +89,11 @@ if __name__ == "__main__":
     def bisection_f(x):
         return x**3 + 4*x**2 - 10
     # Ch 2.2: slides 14 and 15
-    def g_example(x):
+    def g_example1(x):
         return x - (x*x*x) - (4*x*x) + 10  
+    # Ch 2.2: slides 14 and 15
+    def g_example2(x):
+        return math.sqrt(10 - x*x*x) / 2
     # Solve f(x) = cos(x) - x = 0 on [0, π/2], Ch 2.3: slide 8
     def newton_raphson_f(x):
         return math.cos(x) - x
@@ -97,10 +101,9 @@ if __name__ == "__main__":
     def newton_raphson_f_prime(x):
         return -math.sin(x) - 1
 
-    # Ch 2.1: slide 11
-    approximate_root_two(x0=1.5, tol=1e-6)
-
-    
+    # Ch 2.1: slide 11 -- Approximation algorithm for sqrt(2)
+    approximate_root_two(x0=1.5, tol=1e-6)    
     bisection_method(bisection_f, left=1, right=2, tol=1e-3)
-    fixed_point_iteration(g=g_example, p0=1.5, tol=1e-6, max_iter=50)
+    # For fixed point, you can use either g_example1 or g_example2 when running main to test the output
+    fixed_point_iteration(g=g_example2, p0=1.5, tol=1e-6, max_iter=50)
     newton_raphson_method(newton_raphson_f, newton_raphson_f_prime, p0=math.pi/4, tol=25*1e-17, max_iter=50)
