@@ -1,9 +1,6 @@
 # src/test/test_assignment_1.py
 import unittest
 import math
-import re
-from io import StringIO
-from unittest.mock import patch
 
 from src.main.assignment_1 import (
     approximate_root_two,
