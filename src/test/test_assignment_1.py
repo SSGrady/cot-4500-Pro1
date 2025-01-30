@@ -29,7 +29,7 @@ class TestAssignment1(unittest.TestCase):
             val = (10 - x**3) / 4.0
             return math.sqrt(val) if val >= 0 else float('nan')
         p = fixed_point_iteration(g_stable, p0=1.5, tol=1e-6, max_iter=50)
-        self.assertIsNotNone(p)
+        self.assertIsNotNone(p, "Expected p to not be None")
         self.assertAlmostEqual(f(p), 0.0, delta=1e-3)
 
     def test_newton_raphson_method(self):
